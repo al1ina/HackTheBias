@@ -5,7 +5,7 @@ import bcrypt
 DB_CONFIG = {
     "host": "localhost",
     "user": "root",
-    "password": "Omar2011",
+    "password": "strain3872AK",
     "database": "silent_speak_db",
     "port": 3306
 }

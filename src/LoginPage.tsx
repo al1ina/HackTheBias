@@ -1,34 +1,43 @@
 import "./LoginPage.css";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from "react";
 
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const handleSubmit = async (e: React.FormEvent) => {
-  console.log("handleSubmit called!");
-  e.preventDefault();
+  const [error, setError] = useState("");
+  
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
 
-  try {
-    const response = await fetch("http://localhost:5000/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        password,
-      }),
-    });
+    if (!username || !password) {
+      setError("Please enter username and password.");
+      return;
+    }
 
-    const data = await response.json();
-    console.log("Response:", data);
-    console.log("Sent:", username, password);
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
+    try {
+      const res = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.login) {
+        navigate("/home"); // <-- next page route CHNAGE THIS
+      } else {
+        setError(data.message || "Login failed");
+      }
+    } catch (err) {
+      setError("Backend server not running.");
+      console.error(err);
+    }
+  };
   return (
     <div className="login-page">
       <div className="login-container">
@@ -39,7 +48,7 @@ export default function LoginPage() {
 
       <div className="login-container">
         <div className="login-card">
-          <form className="login-form" onSubmit={handleSubmit}>
+          <form className="login-form" onSubmit={handleLogin}>
             <div>
               <label className="login-label">Username</label>
               <input
@@ -59,6 +68,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
             </div>
+            {error && <p style={{ color: "red" }}>{error}</p>}
 
             <Link to="/forgot-password" className="login-forgot">
               Forgot password?

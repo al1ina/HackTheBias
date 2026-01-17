@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function SignupPage() {
-  const [email, setEmail] = useState("");
+  const [email0, setEmail0] = useState("");
+  const [email1, setEmail1] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -18,7 +19,8 @@ export default function SignupPage() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email,
+        email0,
+        email1,
         username,
         password,
       }),
@@ -26,7 +28,7 @@ export default function SignupPage() {
 
     const data = await response.json();
     console.log("Response:", data);
-    console.log("Sent:", email, username, password);
+    console.log("Sent:", email0, email1, username, password);
     if (response.ok) {
         navigate('/verify-email'); 
       }
@@ -50,8 +52,17 @@ export default function SignupPage() {
               <input 
                 type="email" 
                 className="login-input" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={email0}
+                onChange={(e) => setEmail0(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="login-label">Reconfirm email address</label>
+              <input 
+                type="email" 
+                className="login-input" 
+                value={email1}
+                onChange={(e) => setEmail1(e.target.value)}
               />
             </div>
 
