@@ -123,6 +123,14 @@ def signup_user(payload: dict) -> dict:
             (name, username, email, hashed_password, False, verification_code)
         )
         connection.commit()
+        
+        # Initialize user progress (ONE row per user)
+        user_id = cursor.lastrowid  # <-- THIS WAS MISSING
+        cursor.execute(
+            "INSERT INTO user_progress (user_id) VALUES (%s)",
+            (user_id,)
+        )
+        connection.commit()
 
         try:
             send_verification_email(email, verification_code)
