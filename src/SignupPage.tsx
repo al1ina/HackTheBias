@@ -1,11 +1,12 @@
 import "./SignupPage.css";
 import { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent) => {
   console.log("handleSubmit called!");
   e.preventDefault();
@@ -26,6 +27,9 @@ export default function SignupPage() {
     const data = await response.json();
     console.log("Response:", data);
     console.log("Sent:", email, username, password);
+    if (response.ok) {
+        navigate('/verify-email'); 
+      }
   } catch (error) {
     console.error("Error:", error);
   }
@@ -40,7 +44,7 @@ export default function SignupPage() {
 
       <div className="login-container">
         <div className="login-card">
-          <form className="login-form">
+          <form className="login-form" onSubmit={handleSubmit}>
             <div>
               <label className="login-label">Email address</label>
               <input 

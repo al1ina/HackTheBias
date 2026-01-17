@@ -33,6 +33,32 @@ app.post("/login", (req, res) => {
   res.json({ message: "Saved (demo only)" });
 });
 
+app.post("/signup", (req, res) => {
+  const { email, username, password } = req.body;
+
+  console.log("Received:", email, username, password); // Check if data arrives
+
+  const user = { email, username, password };
+
+  // Read existing data (or start empty)
+  let users = [];
+  const filePath = path.join(process.cwd(), "signupdata.json"); // Get full path
+  
+  console.log("File path:", filePath); // See where it's trying to save
+  
+  if (fs.existsSync(filePath)) {
+    users = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  }
+
+  users.push(user);
+
+  fs.writeFileSync(filePath, JSON.stringify(users, null, 2));
+  
+  console.log("Saved successfully!"); // Confirm it saved
+
+  res.json({ message: "Saved (demo only)" });
+});
+
 app.listen(5000, () => {
   console.log("Server running on port 5000");
   console.log("Current directory:", process.cwd()); // See your working directory
