@@ -1,10 +1,10 @@
-/* ===== Duolingo-style horizontal path ===== */
+/* Horizontal Path */
 .duoPath {
-  width: min(1100px, 92vw);   /* <-- important */
+  width: min(1100px, 92vw);   
   display: flex;
   align-items: center;
 
-  margin: 0;                 /* since we're centering via page-bg */
+  margin: 0;                 
   padding: 28px;
   border-radius: 22px;
   background: rgba(255,255,255,0.06);
