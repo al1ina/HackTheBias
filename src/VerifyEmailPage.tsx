@@ -21,7 +21,7 @@ export default function VerifyEmailPage() {
       if (nextInput) (nextInput as HTMLInputElement).focus();
     }
   };
-
+// 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === 'Backspace' && !verificationCode[index] && index > 0) {
       const prevInput = document.getElementById(`code-${index - 1}`);

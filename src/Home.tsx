@@ -1,6 +1,6 @@
 import "./Home.css"
 import { useState } from "react"
-
+// 
 type LessonStatus = "current" | "locked" | "done"
 
 type Lesson = {

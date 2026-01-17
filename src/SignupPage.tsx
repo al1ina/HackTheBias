@@ -47,7 +47,7 @@ export default function SignupPage() {
       alert("Network error. Please try again.");
     }
   };
-
+// 
   return (
     <div className="signup-page">
       <div className="signup-wrapper">

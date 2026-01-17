@@ -3,7 +3,7 @@
   width: min(1100px, 92vw);   /* <-- important */
   display: flex;
   align-items: center;
-
+/*  */
   margin: 0;                 /* since we're centering via page-bg */
   padding: 28px;
   border-radius: 22px;
