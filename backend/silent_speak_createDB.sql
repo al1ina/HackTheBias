@@ -10,5 +10,20 @@ CREATE TABLE users (
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
+    email_verified BOOLEAN DEFAULT FALSE,
+    email_verification_code VARCHAR(10),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+## Table Store all user progress {ID, level type, level number,  }
+CREATE TABLE IF NOT EXISTS user_progress (
+    user_id INT PRIMARY KEY,
+    level_type VARCHAR(100) not Null,
+    level_number INT NOT NULL DEFAULT 1,
+    streak INT NOT NULL DEFAULT 0,
+    last_activity DATE NULL,
+
+    CONSTRAINT fk_user_progress_user
+      FOREIGN KEY (user_id) REFERENCES users(id)
+      ON DELETE CASCADE
 );
