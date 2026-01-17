@@ -5,7 +5,7 @@ try:
     connection = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="**ADD YOUR PASSWORD HERE**",
+        password="Omar2011",
         database="silent_speak_db",
         port=3306
     )
