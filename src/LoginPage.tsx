@@ -1,4 +1,6 @@
 import "./LoginPage.css";
+import { Link } from 'react-router-dom';
+
 
 export default function LoginPage() {
   return (
@@ -13,7 +15,7 @@ export default function LoginPage() {
         <div className="login-card">
           <form className="login-form">
             <div>
-              <label className="login-label">Email address</label>
+              <label className="login-label">Username</label>
               <input type="email" className="login-input" />
             </div>
 
@@ -29,9 +31,10 @@ export default function LoginPage() {
             <button type="submit" className="login-button">
               Login
             </button>
-            <a href="#" className="create-account">
+            <Link to="/signup" className="create-account">
               Create account?
-        </a>
+            </Link>
+
           </form>
           
         </div>
