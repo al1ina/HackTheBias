@@ -1,6 +1,35 @@
 import "./SignupPage.css";
+import { useState } from "react";
+import { Link } from 'react-router-dom';
 
 export default function SignupPage() {
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const handleSubmit = async (e: React.FormEvent) => {
+  console.log("handleSubmit called!");
+  e.preventDefault();
+
+  try {
+    const response = await fetch("http://localhost:5000/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        username,
+        password,
+      }),
+    });
+
+    const data = await response.json();
+    console.log("Response:", data);
+    console.log("Sent:", email, username, password);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
   return (
     <div className="login-page">
       <div className="login-container">
@@ -14,17 +43,32 @@ export default function SignupPage() {
           <form className="login-form">
             <div>
               <label className="login-label">Email address</label>
-              <input type="email" className="login-input" />
+              <input 
+                type="email" 
+                className="login-input" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </div>
 
             <div>
               <label className="login-label">Username</label>
-              <input type="username" className="login-input" />
+              <input
+                type="text"
+                className="login-input"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
             </div>
 
             <div>
               <label className="login-label">Password</label>
-              <input type="password" className="login-input" />
+              <input 
+                type="password" 
+                className="login-input" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
 
            
