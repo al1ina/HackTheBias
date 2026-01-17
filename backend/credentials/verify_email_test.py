@@ -1,7 +1,7 @@
 from verify_email import verify_email
 
 payload = {
-    "code": "494848"
+    "code": "593381"
 }
 
 response = verify_email(payload)
