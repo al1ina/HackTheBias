@@ -9,7 +9,7 @@ from email.mime.multipart import MIMEMultipart
 DB_CONFIG = {
     "host": "localhost",
     "user": "root",
-    "password": "strain3872AK",
+    "password": "Omar2011",
     "database": "silent_speak_db",
     "port": 3306
 }
