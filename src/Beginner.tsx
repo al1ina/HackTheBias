@@ -1,14 +1,20 @@
 import "./Beginner.css";
 import React, { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { ChevronRight, RotateCcw } from "lucide-react";
 
 const Beginner = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const initialMode = searchParams.get("mode") === "quiz" ? "quiz" : "learning";
+  
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [mode, setMode] = useState("learning"); // 'learning' or 'quiz'
+  const [mode, setMode] = useState(initialMode); // 'learning' or 'quiz'
   const [displayedText, setDisplayedText] = useState("");
   const [isTyping, setIsTyping] = useState(true);
   const [quizAnswers, setQuizAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
+  const [levelComplete, setLevelComplete] = useState(false);
 
   const letters = [
     { letter: "A", instruction: "Make a fist with your thumb on the side", image: "✊" },
@@ -55,7 +61,42 @@ const Beginner = () => {
     setQuizAnswers({ ...quizAnswers, [index]: (answer || "").toUpperCase() });
   };
 
-  const handleSubmitQuiz = () => setShowResults(true);
+  const handleSubmitQuiz = async () => {
+    setShowResults(true);
+    const score = calculateScore();
+    const percentage = Math.round((score / letters.length) * 100);
+    
+    // Get user info and current level
+    const userId = localStorage.getItem("user_id");
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentLevel = parseInt(urlParams.get("level") || "1");
+    
+    // If 100%, increment level in database
+    if (percentage === 100 && userId) {
+      setLevelComplete(true);
+      const nextLevel = currentLevel + 1;
+      
+      try {
+        const response = await fetch("http://localhost:5001/update-progress", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: parseInt(userId),
+            level_type: "beginner",
+            level_number: nextLevel
+          }),
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+          // Update localStorage
+          localStorage.setItem("level_number", nextLevel.toString());
+        }
+      } catch (error) {
+        console.error("Failed to update progress:", error);
+      }
+    }
+  };
 
   const handleRestart = () => {
     setCurrentIndex(0);
@@ -155,10 +196,20 @@ const Beginner = () => {
           })}
         </div>
 
-        <button className="beginner-btn primary" onClick={handleRestart}>
-          <RotateCcw size={18} />
-          <span>Restart Learning</span>
-        </button>
+        <div style={{ display: "flex", gap: "1rem", flexDirection: "column" }}>
+          {levelComplete && (
+            <button 
+              className="beginner-btn primary" 
+              onClick={() => navigate("/beginner-levels")}
+            >
+              <span>Continue to Next Level →</span>
+            </button>
+          )}
+          <button className="beginner-btn secondary" onClick={handleRestart}>
+            <RotateCcw size={18} />
+            <span>Restart Learning</span>
+          </button>
+        </div>
       </Wrapper>
     );
   }

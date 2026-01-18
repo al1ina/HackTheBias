@@ -24,9 +24,20 @@ export default function LoginPage() {
         body: JSON.stringify({ username, password }),
       });
 
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonError) {
+        setError("Server error: Invalid response format");
+        return;
+      }
 
       if (res.ok && data.login) {
+        // Store user info in localStorage
+        localStorage.setItem("user_id", data.user_id?.toString() || "");
+        localStorage.setItem("level_type", data.level_type || "beginner");
+        localStorage.setItem("level_number", data.level_number?.toString() || "1");
+        localStorage.setItem("username", username);
         navigate("/home");
       } else {
         setError(data.message || "Login failed");

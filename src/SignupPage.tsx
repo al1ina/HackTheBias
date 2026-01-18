@@ -25,8 +25,8 @@ export default function SignupPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email0,
-          email1,
+          email: email0,
+          confirm_email: email1,
           username,
           name,
           password,

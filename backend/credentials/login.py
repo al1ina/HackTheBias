@@ -5,7 +5,7 @@ import bcrypt
 DB_CONFIG = {
     "host": "localhost",
     "user": "root",
-    "password": "strain3872AK",
+    "password": "Omar2011",
     "database": "silent_speak_db",
     "port": 3306
 }
@@ -33,9 +33,12 @@ def login_user(payload: dict) -> dict:
         cursor = connection.cursor()
 
         query = """
-        SELECT password_hash, email_verified
-        FROM users
-        WHERE username = %s
+        SELECT u.id, u.password_hash, u.email_verified, 
+               COALESCE(up.level_type, 'beginner') as level_type,
+               COALESCE(up.level_number, 1) as level_number
+        FROM users u
+        LEFT JOIN user_progress up ON u.id = up.user_id
+        WHERE u.username = %s
         """
         cursor.execute(query, (username,))
         result = cursor.fetchone()
@@ -45,7 +48,7 @@ def login_user(payload: dict) -> dict:
                 "login": False
             }
 
-        stored_hash, email_verified = result
+        user_id, stored_hash, email_verified, level_type, level_number = result
 
         if not email_verified:
             return {
@@ -58,7 +61,10 @@ def login_user(payload: dict) -> dict:
             }
 
         return {
-            "login": True
+            "login": True,
+            "user_id": user_id,
+            "level_type": level_type,
+            "level_number": level_number
         }
 
     except mysql.connector.Error:

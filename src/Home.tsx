@@ -2,6 +2,34 @@ import "./Home.css"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
+type ProfileMenuProps = {
+  username: string;
+  onSignOut: () => void;
+};
+
+function ProfileMenu({ username, onSignOut }: ProfileMenuProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="profile-menu-container">
+      <button 
+        className="profile-button" 
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        👤 {username}
+      </button>
+      {isOpen && (
+        <div className="profile-dropdown">
+          <div className="profile-dropdown-header">{username}</div>
+          <button className="profile-dropdown-item" onClick={onSignOut}>
+            Sign Out
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 type LessonStatus = "current" | "locked" | "done"
 
 type Lesson = {
@@ -14,8 +42,17 @@ type Lesson = {
 export default function Home() {
   const navigate = useNavigate()
 
-  const [selectedLevel, setSelectedLevel] = useState(1)
-  const [completedLevel, setCompletedLevel] = useState(0)
+  // Get tier unlock status from localStorage
+  const getCompletedTiers = (): string[] => {
+    const stored = localStorage.getItem("home_progress");
+    if (stored) {
+      const data = JSON.parse(stored);
+      return data.completedTiers || [];
+    }
+    return [];
+  };
+
+  const [completedTiers] = useState<string[]>(getCompletedTiers());
 
   const baseLessons = [
     { id: 1, icon: "⭐", label: "Beginner" },
@@ -24,61 +61,69 @@ export default function Home() {
     { id: 4, icon: "🏆", label: "Pro" },
   ]
 
+  // Determine tier unlock status based on previous tier completion
+  const getTierStatus = (tierId: number): LessonStatus => {
+    if (tierId === 1) return "current"; // Beginner always unlocked
+    const previousTierName = ["beginner", "intermediate", "expert"][tierId - 2];
+    return completedTiers.includes(previousTierName) ? "current" : "locked";
+  };
+
   const lessons: Lesson[] = baseLessons.map((lesson) => ({
     ...lesson,
-    status:
-      lesson.id <= completedLevel
-        ? "done"
-        : lesson.id === completedLevel + 1
-        ? "current"
-        : "locked",
+    status: getTierStatus(lesson.id),
   }))
 
-  const rawProgress = (completedLevel / (lessons.length - 1)) * 100
-  const progressPercent = rawProgress === 0 ? "8%" : `${rawProgress}%`
+  // Calculate progress based on completed tiers
+  const completedTierCount = completedTiers.length;
+  const rawProgress = (completedTierCount / (lessons.length - 1)) * 100
+  const progressPercent = rawProgress === 0 ? "8%" : `${Math.min(rawProgress, 100)}%`
 
-  const playableLevelId = completedLevel + 1
-
-  // where each lesson should go:
-  const levelRoutes: Record<number, string> = {
-    1: "/beginner",
-    2: "/intermediate",
-    3: "/expert",
-    4: "/pro",
+  const handleLevelClick = (levelId: number) => {
+    const level = lessons.find(l => l.id === levelId)
+    if (level && level.status !== "locked") {
+      // Navigate to tier's level selection page
+      const tierRoutes: Record<number, string> = {
+        1: "/beginner-levels",
+        2: "/intermediate-levels",
+        3: "/expert-levels",
+        4: "/pro-levels",
+      };
+      navigate(tierRoutes[levelId]);
+    }
   }
+
+  const handleSignOut = () => {
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("username");
+    localStorage.removeItem("level_type");
+    localStorage.removeItem("level_number");
+    navigate("/login");
+  };
+
+  const username = localStorage.getItem("username") || "User";
 
   return (
     <div className="page-bg">
+      <ProfileMenu username={username} onSignOut={handleSignOut} />
       <div className="duoPath">
         <div className="duoTrack" style={{ ["--progress" as any]: progressPercent }}>
           <div className="duoFill" />
 
           <div className="duoNodes">
             {lessons.map((l) => {
-              const isSelected = selectedLevel === l.id
-              const isPlayable = l.id === playableLevelId
+              const isPlayable = l.status === "current"
 
               return (
                 <div key={l.id} style={{ textAlign: "center" }}>
                   <button
                     className="duoNodeBtn"
                     disabled={l.status === "locked"}
-                    onClick={() => {
-                      setSelectedLevel(l.id)
-                      console.log("Open level:", l.id)
-
-                      if (l.id === 1) navigate("/beginner")
-                      if (l.id === 2) navigate("/intermediate")
-                      if (l.id === 3) navigate("/expert")
-                      if (l.id === 4) navigate("/pro")
-                      // navigate(levelRoutes[l.id])
-                    }}
+                    onClick={() => handleLevelClick(l.id)}
                   >
                     <div
                       className={[
                         "duoNode",
                         isPlayable ? "duoNode--current" : "",
-                        isSelected ? "duoNode--selected" : "",
                         l.status === "locked" ? "duoNode--locked" : "",
                         l.status === "done" ? "duoNode--done" : "",
                       ].join(" ")}
