@@ -18,13 +18,19 @@ export default function LoginPage() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/login", {
+      const res = await fetch("http://localhost:5001/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
 
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonError) {
+        setError("Server error: Invalid response format");
+        return;
+      }
 
       if (res.ok && data.login) {
         navigate("/home");

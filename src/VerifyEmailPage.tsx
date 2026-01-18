@@ -50,7 +50,7 @@ export default function VerifyEmailPage() {
     setIsVerifying(true);
 
     try {
-      const response = await fetch('http://localhost:5000/verify-email', {
+      const response = await fetch('http://localhost:5001/verify-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ export default function VerifyEmailPage() {
   const handleResend = async () => {
     setError('');
     try {
-      await fetch('http://localhost:5000/resend-verification', {
+      await fetch('http://localhost:5001/resend-verification', {
         method: 'POST',
       });
       alert('Verification code sent!');
