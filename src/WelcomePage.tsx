@@ -12,8 +12,13 @@ export default function WelcomePage() {
     <div className="welcome-page">
       <div className="welcome-container">
         <div className="welcome-content">
-          <h1 className="welcome-title">Welcome to HackTheBias</h1>
-          <p className="welcome-subtitle">Your journey to unbiased learning starts here</p>
+          <img 
+            src="/silent_speak_logo.png" 
+            alt="Silent Speak Logo" 
+            className="welcome-logo"
+          />
+          <h1 className="welcome-title">Silent Speak</h1>
+          <p className="welcome-subtitle">Sign Elegantly</p>
           <button 
             className="welcome-login-button" 
             onClick={handleLoginClick}
