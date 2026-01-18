@@ -1,6 +1,7 @@
 import "./Home.css"
 import { useState } from "react"
-// 
+import { useNavigate } from "react-router-dom"
+
 type LessonStatus = "current" | "locked" | "done"
 
 type Lesson = {
@@ -11,8 +12,10 @@ type Lesson = {
 }
 
 export default function Home() {
-  const [selectedLevel, setSelectedLevel] = useState(1)   // what user clicked / is viewing
-  const [completedLevel, setCompletedLevel] = useState(0) // progress only changes when exercises complete
+  const navigate = useNavigate()
+
+  const [selectedLevel, setSelectedLevel] = useState(1)
+  const [completedLevel, setCompletedLevel] = useState(0)
 
   const baseLessons = [
     { id: 1, icon: "⭐", label: "Beginner" },
@@ -31,20 +34,18 @@ export default function Home() {
         : "locked",
   }))
 
-  // progress depends ONLY on completedLevel (not clicks)
   const rawProgress = (completedLevel / (lessons.length - 1)) * 100
   const progressPercent = rawProgress === 0 ? "8%" : `${rawProgress}%`
 
-  // Later: call this AFTER finishing exercises inside the level
-  // Example use later: setCompletedLevel((prev) => Math.min(prev + 1, lessons.length - 1))
-  const completeLevel = (levelId: number) => {
-    // only allow completing the next playable level
-    if (levelId === completedLevel + 1) {
-      setCompletedLevel((prev) => Math.min(prev + 1, lessons.length - 1))
-    }
-  }
-
   const playableLevelId = completedLevel + 1
+
+  // where each lesson should go:
+  const levelRoutes: Record<number, string> = {
+    1: "/beginner",
+    2: "/intermediate",
+    3: "/expert",
+    4: "/pro",
+  }
 
   return (
     <div className="page-bg">
@@ -66,15 +67,18 @@ export default function Home() {
                       setSelectedLevel(l.id)
                       console.log("Open level:", l.id)
 
-                      // Later, when user finishes exercises for this level:
-                      // completeLevel(l.id)
+                      if (l.id === 1) navigate("/beginner")
+                      if (l.id === 2) navigate("/intermediate")
+                      if (l.id === 3) navigate("/expert")
+                      if (l.id === 4) navigate("/pro")
+                      // navigate(levelRoutes[l.id])
                     }}
                   >
                     <div
                       className={[
                         "duoNode",
-                        isPlayable ? "duoNode--current" : "",     // ring/float for the actual next level
-                        isSelected ? "duoNode--selected" : "",   // separate style for what user clicked
+                        isPlayable ? "duoNode--current" : "",
+                        isSelected ? "duoNode--selected" : "",
                         l.status === "locked" ? "duoNode--locked" : "",
                         l.status === "done" ? "duoNode--done" : "",
                       ].join(" ")}
