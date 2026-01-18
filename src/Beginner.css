@@ -24,9 +24,15 @@
 /* ====== PAGE ====== */
 .beginner-page{
   min-height: 100vh;
-  display: grid;
-  place-items: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   padding: 28px 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
 
   background:
     radial-gradient(900px circle at 18% 12%, rgba(147,197,253,0.16), transparent 55%),
@@ -36,12 +42,51 @@
   color: var(--text);
 }
 
+/* Hide scrollbar but allow scrolling */
+.beginner-page::-webkit-scrollbar {
+  width: 8px;
+}
+
+.beginner-page::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.beginner-page::-webkit-scrollbar-thumb {
+  background: rgba(147, 197, 253, 0.3);
+  border-radius: 4px;
+}
+
+.beginner-page::-webkit-scrollbar-thumb:hover {
+  background: rgba(147, 197, 253, 0.5);
+}
+
+/* Scrollable container - allow scrolling */
+.scrollable-container {
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: auto;
+}
+
+.scrollable-icon-bank {
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.scrollable-icon-bank::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
 /* ====== CARD ====== */
 .beginner-card{
   width: 100%;
   max-width: 460px;
   border-radius: 22px;
   padding: 22px;
+  margin: 0 auto 2rem auto;
 
   background: var(--glass) !important;
   border: 1px solid var(--border);
@@ -50,6 +95,11 @@
   box-shadow:
     0 24px 55px rgba(0,0,0,0.42),
     inset 0 1px 0 rgba(255,255,255,0.06);
+  
+  /* Allow card to grow with content */
+  min-height: auto;
+  max-height: none;
+  position: relative;
 }
 
 /* ====== TITLE / typing ====== */
@@ -101,6 +151,26 @@
   line-height: 1;
   margin: 6px 0 12px;
   filter: drop-shadow(0 14px 20px rgba(0,0,0,0.45));
+}
+
+.beginner-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 6px 0 12px;
+}
+
+.letter-image {
+  max-width: 200px;
+  max-height: 200px;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 20px rgba(0,0,0,0.45));
+}
+
+.letter-image-quiz {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
 }
 
 .beginner-letter{
@@ -364,4 +434,319 @@
 .beginner-resultMark.bad{ color: rgba(255,255,255,0.65) !important; }
 body {
     overflow-y: auto;
+}
+
+/* Back to Levels Button */
+.back-to-levels-btn {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 100;
+}
+
+.back-to-levels-btn:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Question Text */
+.beginner-question-text {
+  color: var(--text);
+  font-size: 1.125rem;
+  text-align: center;
+  margin: 1rem 0;
+  font-weight: 600;
+}
+
+.beginner-quizEmoji-large {
+  font-size: 4rem;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+/* Multiple Choice Options */
+.multiple-choice-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.choice-button {
+  padding: 1rem 1.5rem;
+  background: rgba(59, 130, 246, 0.2);
+  border: 2px solid rgba(59, 130, 246, 0.4);
+  border-radius: 0.75rem;
+  color: white;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.choice-button:hover {
+  background: rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.6);
+}
+
+.choice-button.selected {
+  background: rgba(59, 130, 246, 0.5);
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* Matching Questions */
+.matching-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.matching-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.matching-item {
+  padding: 1rem 1.5rem;
+  background: rgba(59, 130, 246, 0.2);
+  border: 2px solid rgba(59, 130, 246, 0.4);
+  border-radius: 0.75rem;
+  color: white;
+  font-size: 1.125rem;
+  font-weight: 600;
+  min-width: 60px;
+  text-align: center;
+}
+
+.matching-arrow {
+  color: var(--blue1);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.matching-item-button {
+  padding: 1rem 1.5rem;
+  background: rgba(59, 130, 246, 0.2);
+  border: 2px solid rgba(59, 130, 246, 0.4);
+  border-radius: 0.75rem;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 80px;
+}
+
+.matching-item-button:hover {
+  background: rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.6);
+}
+
+.matching-item-button.matched {
+  background: rgba(124, 252, 0, 0.3);
+  border-color: #7CFC00;
+}
+
+/* Icon Bank */
+.icon-bank {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 0.75rem;
+  border: 2px dashed rgba(59, 130, 246, 0.3);
+}
+
+.icon-bank h4 {
+  color: var(--text);
+  font-size: 0.95rem;
+  margin: 0 0 0.75rem 0;
+  text-align: center;
+  font-weight: 600;
+}
+
+.icon-bank-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.bank-icon {
+  font-size: 2.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(59, 130, 246, 0.2);
+  border: 2px solid rgba(59, 130, 246, 0.4);
+  border-radius: 0.5rem;
+  cursor: grab;
+  transition: all 0.2s;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  min-height: 60px;
+}
+
+.bank-icon-image {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.dropped-icon-image {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.bank-icon:hover {
+  background: rgba(59, 130, 246, 0.3);
+  transform: scale(1.1);
+}
+
+.bank-icon:active {
+  cursor: grabbing;
+  transform: scale(0.95);
+}
+
+.beginner-question-hint {
+  color: var(--muted);
+  font-size: 0.875rem;
+  text-align: center;
+  margin: 0.5rem 0 1rem 0;
+}
+
+/* Drag and Drop Zones */
+.matching-drop-zone {
+  padding: 1rem 1.5rem;
+  min-width: 100px;
+  min-height: 60px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 2px dashed rgba(59, 130, 246, 0.4);
+  border-radius: 0.75rem;
+  color: var(--muted);
+  font-size: 1.125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.matching-drop-zone:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.6);
+}
+
+.matching-drop-zone.matched {
+  background: rgba(124, 252, 0, 0.3);
+  border-color: #7CFC00;
+  color: white;
+  font-size: 2rem;
+}
+
+.matching-drop-zone.incorrect {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: white;
+  font-size: 2rem;
+}
+
+/* True/False Options */
+.true-false-options {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.true-false-options .choice-button {
+  flex: 1;
+  max-width: 150px;
+}
+
+/* Word Spelling */
+.word-spelling-container {
+  margin-top: 1.5rem;
+}
+
+.word-label {
+  text-align: center;
+  font-size: 1.125rem;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.word-spelling-slots {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.word-spelling-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.word-letter-label {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--blue1);
+}
+
+.word-drop-zone {
+  min-width: 80px;
+  min-height: 80px;
+  padding: 0.5rem;
+  background: rgba(59, 130, 246, 0.1);
+  border: 2px dashed rgba(59, 130, 246, 0.4);
+  border-radius: 0.75rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.word-drop-zone:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.6);
+}
+
+.word-drop-zone.matched {
+  background: rgba(124, 252, 0, 0.3);
+  border-color: #7CFC00;
+  border-style: solid;
+}
+
+.word-drop-zone.incorrect {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  border-style: solid;
+}
+
+.beginner-highest-score {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.875rem;
+  color: var(--muted);
+  text-align: center;
 }

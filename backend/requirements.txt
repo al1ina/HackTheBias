@@ -1,3 +1,10 @@
 mysql-connector-python
 bcrypt
 flask
+flask-cors
+mediapipe
+tensorflow
+pillow
+numpy
+huggingface-hub
+opencv-python
